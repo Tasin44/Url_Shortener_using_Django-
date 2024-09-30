@@ -1,0 +1,114 @@
+<head>
+    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+    <style>
+        *,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+body {
+  min-height: 80vh;
+  font-family: "Lato", sans-serif;
+  line-height: 1.5;
+  color: green; /* Change to a neutral dark color */
+  background-color: lightblue;
+}
+
+main {
+  max-width: 500px;
+  width: 100%;
+  border: 2.5px solid #330867;
+  border-radius: 2.5px;
+  box-shadow: 0 10px 20px rgba(17, 17, 17, 0.125),
+    0 5px 5px rgba(17, 17, 17, 0.25);
+  background-image: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+  padding: 20px; /* Add some padding inside the box */
+}
+
+h1 {
+  padding: 1rem;
+  color: black;
+}
+
+input,
+button {
+  font-family: inherit;
+  line-height: inherit;
+  color: #333;
+  border: 0;
+  {% comment %} padding: 1rem; {% endcomment %}
+  padding: 15px;
+}
+
+input {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.buttons {
+  display: flex ;
+  width: 20%;
+}
+
+button {
+  cursor: pointer;
+  flex: 1;
+  background-color: green;
+  color: black;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+section {
+  min-height: 50px;
+  text-align: center;
+  background-color: white;
+}
+
+    </style>
+</head>
+<main>
+  <h1>URL Shortener</h1>
+  <form id="post-form">
+    {% csrf_token %}
+  <input type="text" name="link" id="link" placeholder="Enter URL here">
+  <div class="buttons">
+    <button type="submit" id="shorten">Shorten</button>
+  </div>
+  </form>
+  
+  <section id="section"><h2></h2></section>
+  {% comment %} once we get an http response,
+  we will show the link here <h2>link</h2> {% endcomment %}
+    
+</main>
+
+<script type="text/javascript">
+  $(document).on('submit','#post-form',function(e){
+    e.preventDefault();
+
+    $.ajax({
+      type:'POST',
+      url:'/create',
+      data:{
+        link:$('#link').val(),
+        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+      },
+      success: function(data){
+        {% comment %} here in 'data',a variable which has http response
+        stored in it {% endcomment %}
+        $('h2').html("localhost:8000/"+data)
+      }
+    });
+  });
+</script>
